@@ -35,8 +35,6 @@ def get_tickers():
 
 def dump_file(filename):
     with open(filename) as csv_file:
-#       with open("/Users/anandpartha/Downloads/all_trans_filtered_file.csv", mode='w') as all_out_file:
-#            with open("/Users/anandpartha/Downloads/sale_trans_filtered_file.csv", mode='w') as sale_out_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         line_count = 0
         for row in csv_reader:
@@ -49,6 +47,20 @@ def dump_file(filename):
         print(f'Processed {line_count} lines.')
 
 
+def process_all_transactions(all_trans_file):
+    dirname       = os.path.dirname(all_trans_file)
+    basename, extname = os.path.splitext(os.path.basename(all_trans_file))
+    newname     = basename + '_out' + extname
+    print(basename, extname)
+    print('All trans output file ', newname)
+#   with open(all_trans_file) as csv_file:
+#   with open(", mode='w') as all_out_file:
+
+
+
+
+#            with open("/Users/anandpartha/Downloads/sale_trans_filtered_file.csv", mode='w') as sale_out_file:
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi(os.getlogin())
@@ -57,6 +69,7 @@ if __name__ == '__main__':
     print('All Transactions: ' + all_trans_file)
     print('Sale transactions: ' + sale_trans_file)
     print(tickers)
+    process_all_transactions(all_trans_file)
     dump_file(all_trans_file)
     dump_file(sale_trans_file)
 
