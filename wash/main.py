@@ -28,10 +28,17 @@ def get_files():
     if "" == sale_trans_file_name:
         print('Sorry missing RSU sale transactions CSV file')
         exit(1)
+    print('All Transactions: ' + all_trans_file_name)
+    print('Sale transactions: ' + sale_trans_file_name)
 
 def get_tickers():
     global tickers
-    tickers = input("Please enter ticket symbols separated by space: ").split()
+    while (True):
+        tickers = input("Please enter ticket symbols separated by space: ").split()
+        if  len(tickers) != 0:
+            print(tickers)
+            return
+        print('Sorry no tickers to filter, please specify the symbols of equities to filter')
 
 def dump_file(filename):
     with open(filename) as csv_file:
@@ -92,15 +99,9 @@ def process_sale_transactions(sale_trans_file_name):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi(os.getlogin())
     get_files()
     get_tickers()
-    print('All Transactions: ' + all_trans_file_name)
-    print('Sale transactions: ' + sale_trans_file_name)
-    print(tickers)
     process_all_transactions(all_trans_file_name)
     process_sale_transactions(sale_trans_file_name)
-#    dump_file(all_trans_file_name)
-#    dump_file(sale_trans_file_name)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
