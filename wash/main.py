@@ -7,8 +7,8 @@ import csv
 import os
 
 # Define a few state variables
-all_trans_file = ""
-sale_trans_file = ""
+all_trans_file_name = ""
+sale_trans_file_name = ""
 tickers = []
 
 
@@ -18,14 +18,14 @@ def print_hi(name):
 
 
 def get_files():
-    global all_trans_file
-    all_trans_file = input("Please provide full path to CSV file with all transactions: ")
-    if "" == all_trans_file:
+    global all_trans_file_name
+    all_trans_file_name = input("Please provide full path to CSV file with all transactions: ")
+    if "" == all_trans_file_name:
         print('Sorry missing all transactions CSV file')
         exit(1)
-    global sale_trans_file
-    sale_trans_file = input("Please provide full path to CSV file with RSU sale transactions: ")
-    if "" == sale_trans_file:
+    global sale_trans_file_name
+    sale_trans_file_name = input("Please provide full path to CSV file with RSU sale transactions: ")
+    if "" == sale_trans_file_name:
         print('Sorry missing RSU sale transactions CSV file')
         exit(1)
 
@@ -47,14 +47,26 @@ def dump_file(filename):
         print(f'Processed {line_count} lines.')
 
 
-def process_all_transactions(all_trans_file):
-    dirname       = os.path.dirname(all_trans_file)
-    basename, extname = os.path.splitext(os.path.basename(all_trans_file))
-    newname     = basename + '_out' + extname
-    print(basename, extname)
-    print('All trans output file ', newname)
-#   with open(all_trans_file) as csv_file:
-#   with open(", mode='w') as all_out_file:
+def process_all_transactions(all_trans_file_name):
+    dirname       = os.path.dirname(all_trans_file_name)
+    basename, extname = os.path.splitext(os.path.basename(all_trans_file_name))
+    all_trans_out_file_name = dirname + '/' + basename + '_out' + extname
+    print('All trans output file ',all_trans_out_file_name)
+    with open(all_trans_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        with open(all_trans_out_file_name, mode='w') as all_out_file:
+            csv_writer = csv.writer(all_out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 1:
+                    print(f'Column names are {", ".join(row)}')
+                    csv_writer.writerow(row)
+                elif line_count != 0:
+                    print(row)
+                    if row[2] in tickers:
+                        csv_writer.writerow(row)
+                line_count += 1
+            print(f'Processed {line_count} lines.')
 
 
 
@@ -66,11 +78,11 @@ if __name__ == '__main__':
     print_hi(os.getlogin())
     get_files()
     get_tickers()
-    print('All Transactions: ' + all_trans_file)
-    print('Sale transactions: ' + sale_trans_file)
+    print('All Transactions: ' + all_trans_file_name)
+    print('Sale transactions: ' + sale_trans_file_name)
     print(tickers)
-    process_all_transactions(all_trans_file)
-    dump_file(all_trans_file)
-    dump_file(sale_trans_file)
+    process_all_transactions(all_trans_file_name)
+    dump_file(all_trans_file_name)
+    dump_file(sale_trans_file_name)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
