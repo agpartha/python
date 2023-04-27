@@ -68,10 +68,27 @@ def process_all_transactions(all_trans_file_name):
                 line_count += 1
             print(f'Processed {line_count} lines.')
 
+def process_sale_transactions(sale_trans_file_name):
+    dirname           = os.path.dirname(sale_trans_file_name)
+    basename, extname = os.path.splitext(os.path.basename(sale_trans_file_name))
+    sale_trans_out_file_name = dirname + '/' + basename + '_out' + extname
+    print('Sale trans output file ',sale_trans_out_file_name)
+    with open(sale_trans_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        with open(sale_trans_out_file_name, mode='w') as sale_out_file:
+            csv_writer = csv.writer(sale_out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            line_count = 0
+            for row in csv_reader:
+                if line_count == 1:
+                    print(f'Column names are {", ".join(row)}')
+                    csv_writer.writerow(row)
+                elif line_count != 0:
+                    print(row)
+                    if row[0] in tickers:
+                        csv_writer.writerow(row)
+                line_count += 1
+            print(f'Processed {line_count} lines.')
 
-
-
-#            with open("/Users/anandpartha/Downloads/sale_trans_filtered_file.csv", mode='w') as sale_out_file:
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -82,7 +99,8 @@ if __name__ == '__main__':
     print('Sale transactions: ' + sale_trans_file_name)
     print(tickers)
     process_all_transactions(all_trans_file_name)
-    dump_file(all_trans_file_name)
-    dump_file(sale_trans_file_name)
+    process_sale_transactions(sale_trans_file_name)
+#    dump_file(all_trans_file_name)
+#    dump_file(sale_trans_file_name)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
