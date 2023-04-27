@@ -96,7 +96,7 @@ def process_sale_transactions(sale_trans_file_name):
                 line_count += 1
             print(f'Processed {line_count} lines.')
 
-def filter_transactions(trans_file_name: str, ticker_index: int):
+def filter_transactions(trans_file_name: str, ticker_index: int, header_row: int, skip_rows: list):
     dirname = os.path.dirname(trans_file_name)
     basename, extname = os.path.splitext(os.path.basename(trans_file_name))
     trans_out_file_name = dirname + '/' + basename + '_out' + extname
@@ -107,10 +107,10 @@ def filter_transactions(trans_file_name: str, ticker_index: int):
             csv_writer = csv.writer(trans_out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             line_count = 0
             for row in csv_reader:
-                if line_count == 1:
+                if line_count == header_row:
                     print(f'Column names are {", ".join(row)}')
                     csv_writer.writerow(row)
-                elif line_count != 0:
+                elif line_count not in skip_rows:
                     print(row)
                     if row[ticker_index] in tickers:
                         csv_writer.writerow(row)
@@ -124,6 +124,6 @@ if __name__ == '__main__':
     get_tickers()
  #   process_all_transactions(all_trans_file_name)
  #   process_sale_transactions(sale_trans_file_name)
-    filter_transactions(all_trans_file_name, 2)
-    filter_transactions(sale_trans_file_name, 0)
+    filter_transactions(all_trans_file_name, 2, 1, [0])
+    filter_transactions(sale_trans_file_name, 0, 1, [0])
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
