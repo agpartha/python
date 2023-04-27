@@ -9,13 +9,48 @@ import os
 # Define a few state variables
 all_trans_file_name = ""
 sale_trans_file_name = ""
-tickers = []
-
+trans_file_name =""
+skip_rows = []
+header_row = 0
+ticker_column_name = "Symbol"
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
 
+def get_trans_file():
+    global trans_file_name
+    while (True):
+        trans_file_name = input("Please provide full path to CSV file with all transactions: ")
+        if "" != trans_file_name:
+            print('transaction file name: ' + trans_file_name)
+            break
+        print('Sorry, empty transaction csv filename....')
+        continue
+
+    global header_row
+    while (True):
+        header_row_str = input("Header Row # ? ")
+        if "" != header_row_str:
+            header_row = int(header_row_str)
+            print('Header Row # : ' + str(header_row))
+            break
+        print('Sorry missing Header Row #....')
+        continue
+
+    global ticker_column_name
+    while (True):
+        ticker_column_name = input("Column name for the ticker symbols ?  ")
+        if "" != ticker_column_name:
+            print('Column name for the ticker symbols: ' + ticker_column_name)
+            break
+        print('Sorry missing Column name for the ticker symbols....')
+        continue
+
+    global skip_rows
+    skip_rows = [int(x) for x in input("Please enter row numbers to skip, separated by space: ").split()]
+    if  len(skip_rows) != 0:
+        print(skip_rows)
 
 def get_files():
     global all_trans_file_name
@@ -121,10 +156,12 @@ def filter_transactions(trans_file_name: str, ticker_column_name: str, header_ro
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    get_files()
+#    get_files()
+    get_trans_file()
     get_tickers()
  #   process_all_transactions(all_trans_file_name)
  #   process_sale_transactions(sale_trans_file_name)
-    filter_transactions(all_trans_file_name, "Symbol", 1, [0])
-    filter_transactions(sale_trans_file_name, "Symbol", 1, [0])
+ #   filter_transactions(all_trans_file_name, "Symbol", 1, [0])
+ #   filter_transactions(sale_trans_file_name, "Symbol", 1, [0])
+    filter_transactions(trans_file_name, ticker_column_name, header_row, skip_rows)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
